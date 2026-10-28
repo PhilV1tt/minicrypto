@@ -46,23 +46,23 @@ pub fn gf_inv(a: u8) -> u8 {
 }
 
    fn sbox_value(b: u8) -> u8 {
-       let inv = gf_inv(b);          // inverse multiplicatif (0 si b == 0)
-       let mut result = 0u8;         // octet de sortie
+       let inv = gf_inv(b);         
+       let mut result = 0u8;
 
-       for i in 0..8 {               // pour chaque bit de 0 à 7
+       for i in 0..8 {        
            let bit_i     = (inv >> i) & 1;
            let bit_i4    = (inv >> ((i + 4) % 8)) & 1;
            let bit_i5    = (inv >> ((i + 5) % 8)) & 1;
            let bit_i6    = (inv >> ((i + 6) % 8)) & 1;
            let bit_i7    = (inv >> ((i + 7) % 8)) & 1;
 
-           // bit i de la constante 0x63
+ 
            let bit_c     = (0x63 >> i) & 1;
 
-           // XOR de tout ça
+        
            let out_bit   = bit_i ^ bit_i4 ^ bit_i5 ^ bit_i6 ^ bit_i7 ^ bit_c;
 
-           // si out_bit == 1, on allume le bit i du résultat
+          
            if out_bit == 1 {
                result |= 1 << i;
            }
@@ -71,7 +71,7 @@ pub fn gf_inv(a: u8) -> u8 {
        result
    }
 
-fn generate_sbox() -> [u8 256] {
+fn generate_sbox() -> [u8; 256] {
     let mut sbox = [0u8; 256];
     for i in 0..256 {
         sbox[i] = sbox_value(i);
