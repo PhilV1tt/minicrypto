@@ -7,9 +7,8 @@ pub fn toggle_bit(x: u8, n: u8) -> u8 {
 }
 
 pub fn xtime(a: u8) -> u8 {
-    if most_significant_bit(a){
+    if most_significant_bit(a) {
         (a << 1) ^ 0x1B
-
     } else {
         a << 1
     }
@@ -17,37 +16,34 @@ pub fn xtime(a: u8) -> u8 {
 
 pub fn gf_mul(mut a: u8, mut b: u8) -> u8 {
     let mut result = 0;
-    while b != 0{
-        if b & 1 != 0{
-            result = result ^ a;
+    while b != 0 {
+        if b & 1 != 0 {
+            result ^= a;
         }
-        b = b >> 1;
+        b >>= 1;
         a = xtime(a);
     }
     result
 }
 
-
-pub fn gf_pow(mut a: u8, mut n: u8) -> u8{
+pub fn gf_pow(mut a: u8, mut n: u8) -> u8 {
     let mut result = 1;
-    while n>0 {
+    while n > 0 {
         if n & 1 != 0 {
             result = gf_mul(result, a);
         }
         a = gf_mul(a, a);
-        n = n >> 1;
+        n >>= 1;
     }
     result
-
 }
 
-pub fn gf_inv(a: u8) -> u8{
+pub fn gf_inv(a: u8) -> u8 {
     if a == 0 {
         return 0;
     }
-    gf_pow(a,254)
+    gf_pow(a, 254)
 }
-
 
 #[test]
 fn test_msb() {
@@ -58,7 +54,7 @@ fn test_msb() {
     assert_eq!(toggle_bit(0b10101010, 3), 0b10100010);
     assert_eq!(xtime(0x05), 0x0A);
     assert_eq!(xtime(0x80), 0x1B);
-    assert_eq!(gf_mul(0x57, 0x83),0xC1);
+    assert_eq!(gf_mul(0x57, 0x83), 0xC1);
     assert_eq!(gf_inv(0x00), 0x00);
     assert_eq!(gf_mul(0x57, gf_inv(0x57)), 1);
     assert_eq!(gf_pow(0x02, 3), xtime(xtime(0x02)));
