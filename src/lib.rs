@@ -45,31 +45,10 @@ pub fn gf_inv(a: u8) -> u8 {
     gf_pow(a, 254)
 }
 
-   fn sbox_value(b: u8) -> u8 {
-       let inv = gf_inv(b);         
-       let mut result = 0u8;
-
-       for i in 0..8 {        
-           let bit_i     = (inv >> i) & 1;
-           let bit_i4    = (inv >> ((i + 4) % 8)) & 1;
-           let bit_i5    = (inv >> ((i + 5) % 8)) & 1;
-           let bit_i6    = (inv >> ((i + 6) % 8)) & 1;
-           let bit_i7    = (inv >> ((i + 7) % 8)) & 1;
-
- 
-           let bit_c     = (0x63 >> i) & 1;
-
-        
-           let out_bit   = bit_i ^ bit_i4 ^ bit_i5 ^ bit_i6 ^ bit_i7 ^ bit_c;
-
-          
-           if out_bit == 1 {
-               result |= 1 << i;
-           }
-       }
-
-       result
-   }
+fn sbox_value(b: u8) -> u8 {
+    let x = gf_inv(b);
+    x ^ x.rotate_left(1) ^ x.rotate_left(2) ^ x.rotate_left(3) ^ x.rotate_left(4) ^ 0x63
+}
 
 fn generate_sbox() -> [u8; 256] {
     let mut sbox = [0u8; 256];
