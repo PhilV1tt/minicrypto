@@ -45,21 +45,33 @@ pub fn gf_inv(a: u8) -> u8 {
     gf_pow(a, 254)
 }
 
-fn sbox_value(b: u8) -> u8 {
+pub fn sbox_value(b: u8) -> u8 {
     let x = gf_inv(b);
     x ^ x.rotate_left(1) ^ x.rotate_left(2) ^ x.rotate_left(3) ^ x.rotate_left(4) ^ 0x63
 }
 
-fn generate_sbox() -> [u8; 256] {
+pub fn inv_sbox_value(y: u8) -> u8 {
+    let z = y ^ y.rotate_right(2) ^ y.rotate_right(4) ^ y.rotate_right(5) ^ y.rotate_right(6) ^ 0x05;
+    gf_inv(z)
+    
+}
+
+pub fn generate_sbox() -> [u8; 256] {
     let mut sbox = [0u8; 256];
     for i in 0..256 {
-        sbox[i] = sbox_value(i);
+        sbox[i] = sbox_value(i as u8);
     }
     sbox
 
 }
 
-
+pub fn generate_inv_sbox() -> [u8; 256] {
+    let mut inv_sbox = [0u8; 256];
+    for y in 0..256 {
+        inv_sbox[y] = inv_sbox_value(y as u8);
+    }
+    inv_sbox
+}
 
 
 #[test]
